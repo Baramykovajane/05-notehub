@@ -33,19 +33,22 @@ const validationSchema = Yup.object({
 
 interface Props {
   onClose: () => void;
+  onCreated: () => void;
 }
 
-export default function NoteForm({ onClose }: Props) {
+
+export default function NoteForm({ onClose, onCreated }: Props) {
   const fieldId = useId();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: createNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      onClose();
-    },
-  });
+  mutationFn: createNote,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ["notes"] });
+    onCreated();  
+    onClose();
+  },
+});
 
   return (
     <Formik

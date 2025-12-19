@@ -64,11 +64,16 @@ const { data, isLoading, isError } = useQuery<FetchNotesResponse>({
 )}
 
 
+     
       {isModalOpen && (
   <Modal onClose={() => setIsModalOpen(false)}>
-    <NoteForm onClose={() => setIsModalOpen(false)} />
+    <NoteForm
+      onClose={() => setIsModalOpen(false)}
+      onCreated={() => setPage(1)}
+    />
   </Modal>
 )}
+
     </div>
   );
 }

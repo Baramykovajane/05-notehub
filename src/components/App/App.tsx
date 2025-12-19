@@ -22,23 +22,26 @@ export default function App() {
 
   const [debouncedSearch] = useDebounce(search, 500);
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1); 
+  };
 
-const { data, isLoading, isError } = useQuery<FetchNotesResponse>({
-  queryKey: ["notes", page, debouncedSearch],
-  queryFn: () =>
-    fetchNotes({
-      page,
-      perPage: PER_PAGE,
-      search: debouncedSearch || undefined,
-    }),
-  placeholderData: keepPreviousData,
-});
-
+  const { data, isLoading, isError } = useQuery<FetchNotesResponse>({
+    queryKey: ["notes", page, debouncedSearch],
+    queryFn: () =>
+      fetchNotes({
+        page,
+        perPage: PER_PAGE,
+        search: debouncedSearch || undefined,
+      }),
+    placeholderData: keepPreviousData,
+  });
 
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox value={search} onChange={setSearch} />
+        <SearchBox value={search} onChange={handleSearchChange} />
 
         {data && data.totalPages > 1 && (
           <Pagination
@@ -57,23 +60,18 @@ const { data, isLoading, isError } = useQuery<FetchNotesResponse>({
       </header>
 
       {isLoading && <p>Loading...</p>}
-{isError && <p>Error loading notes</p>}
+      {isError && <p>Error loading notes</p>}
 
-{data && data.notes.length > 0 && (
-  <NoteList notes={data.notes} />
-)}
+      {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
 
-
-     
       {isModalOpen && (
-  <Modal onClose={() => setIsModalOpen(false)}>
-    <NoteForm
-      onClose={() => setIsModalOpen(false)}
-      onCreated={() => setPage(1)}
-    />
-  </Modal>
-)}
-
+        <Modal onClose={() => setIsModalOpen(false)}>
+          <NoteForm
+            onClose={() => setIsModalOpen(false)}
+            onCreated={() => setPage(1)}
+          />
+        </Modal>
+      )}
     </div>
   );
 }
